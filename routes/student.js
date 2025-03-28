@@ -10,6 +10,7 @@ router.get("/registration", async (req, res) => {
         if (!admNumber || !dob) {
             return res.status(400).json({ msg: "Admission number and DOB are required" });
         }
+
         const studentDetails = await Student.findOne({ admNumber, dob }).lean();
         if (!studentDetails) {
             return res.status(404).json({ msg: "Student not found" });
@@ -27,14 +28,16 @@ router.post("/registration", async (req, res) => {
         const { name, dob, aadhaarNumber, siblings } = req.body;
 
         // Required Fields Validation
-        if (!name || !dob || !aadhaarNumber) {
-            return res.status(400).json({ msg: "Name, DOB, and Aadhaar number are required" });
+        if (!name || !dob) {
+            return res.status(400).json({ msg: "Name and DOB are required" });
         }
 
-        // Check for Duplicate Aadhaar Number
-        const existingStudent = await Student.findOne({ aadhaarNumber }).lean();
-        if (existingStudent) {
-            return res.status(400).json({ msg: "Student with this Aadhaar already exists" });
+        // Check for Duplicate Aadhaar Number (unless it's "999999999999" or empty)
+        if (aadhaarNumber && aadhaarNumber !== "999999999999" && aadhaarNumber.trim() !== "") {
+            const existingStudent = await Student.findOne({ aadhaarNumber }).lean();
+            if (existingStudent) {
+                return res.status(400).json({ msg: "Student with this Aadhaar already exists" });
+            }
         }
 
         // Generate Unique Admission Number (IPSddmmyyyyXXX)
@@ -72,6 +75,7 @@ router.post("/registration", async (req, res) => {
     }
 });
 
+// Update Student Details
 router.put("/registration", async (req, res) => {
     try {
         const { admNumber, aadhaarNumber, siblings, ...updateData } = req.body;
@@ -80,8 +84,8 @@ router.put("/registration", async (req, res) => {
             return res.status(400).json({ msg: "Admission number is required for updates" });
         }
 
-        // Check if Aadhaar is being updated & ensure uniqueness
-        if (aadhaarNumber) {
+        // Check if Aadhaar is being updated & ensure uniqueness (unless it's "999999999999" or empty)
+        if (aadhaarNumber && aadhaarNumber !== "999999999999" && aadhaarNumber.trim() !== "") {
             const existingStudent = await Student.findOne({
                 aadhaarNumber,
                 admNumber: { $ne: admNumber }, // Ensure it's not the same student
@@ -109,7 +113,7 @@ router.put("/registration", async (req, res) => {
             { admNumber },
             { $set: updateData },
             { new: true, runValidators: true, upsert: false }
-        ).setOptions({ overwrite: false });
+        );
 
         if (!updatedStudent) {
             return res.status(404).json({ msg: "Student not found" });
