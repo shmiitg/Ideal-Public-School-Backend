@@ -35,23 +35,10 @@ const studentSchema = new mongoose.Schema(
             secondary: { type: String, trim: true }, // Trim added
         },
         lastSchoolAttended: { type: String, trim: true },
-        siblings: [
-            {
-                name: { type: String, trim: true },
-                regNumber: { type: Number, sparse: true }, // Sparse added
-            },
-        ],
+        siblings: [{ type: String, trim: true }],
         religion: {
             type: String,
-            enum: [
-                "Hindu",
-                "Muslim",
-                "Christian",
-                "Sikh",
-                "Buddhist",
-                "Jain",
-                "Parsi (Zoroastrian)",
-            ],
+            enum: ["Hindu", "Muslim", "Christian", "Sikh", "Buddhist", "Jain", "Parsi"],
             required: true,
         },
         caste: { type: String, trim: true },
