@@ -22,10 +22,10 @@ const studentSchema = new mongoose.Schema(
         annualIncome: {
             type: String,
             enum: [
-                "Rs. 0 - 1 lakh",
-                "Rs. 1 lakh - 5 lakh",
-                "Rs. 5 lakh - 10 lakh",
-                "Rs. 10 lakh +",
+                "Less than Rs. 1 lakh",
+                "Rs. 1 lakh - Rs. 4.99 lakh",
+                "Rs. 5 lakh - Rs. 9.99 lakh",
+                "Rs. 10 lakh and above",
             ],
             required: true,
         },
@@ -44,6 +44,8 @@ const studentSchema = new mongoose.Schema(
         caste: { type: String, trim: true },
         category: { type: String, enum: ["General", "OBC", "EWS", "SC", "ST"], required: true },
         transportRequired: { type: String, enum: ["Yes", "No"] },
+        studying: { type: String, default: "Yes", enum: ["Yes", "No"] },
+        rte: { type: String, default: "No", enum: ["Yes", "No"] },
     },
     { timestamps: true }
 );
