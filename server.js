@@ -11,6 +11,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Root Route - Show a message
+app.get("/", (req, res) => {
+    res.send("Welcome to the Ideal Public School Backend!");
+});
+
 app.use("/student", studentRouter);
 
 const port = process.env.PORT || 5000;
