@@ -15,16 +15,13 @@ router.post("/register", async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = new User({ name, email, password: hashedPassword });
-
         await user.save();
 
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: "720h",
         });
-
         res.status(201).json({ token });
     } catch (err) {
-        console.log(err);
         res.status(500).json({ error: "Server error" });
     }
 });
