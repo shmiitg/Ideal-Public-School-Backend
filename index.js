@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
+const authRouter = require("./routes/auth");
+const userRouter = require("./routes/user");
 const studentRouter = require("./routes/student");
 
 require("./config/db");
@@ -16,10 +18,11 @@ app.get("/", (req, res) => {
     res.send("Welcome to the Ideal Public School Backend!");
 });
 
+app.use("/auth", authRouter);
+app.use("/user", userRouter);
 app.use("/student", studentRouter);
 
 // const port = process.env.PORT || 5000;
-
 // app.listen(port, () => console.log(`Server running at port ${port}`));
 
 module.exports = app;
