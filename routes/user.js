@@ -7,9 +7,9 @@ const auth = require("../middleware/auth");
 router.get("/", auth, async (req, res) => {
     try {
         const user = await User.findById(req.userId).lean().exec();
-        res.json({ email: user.email, role: user.role });
+        res.status(200).json({ email: user.email, role: user.role });
     } catch (err) {
-        res.status(500).send("Server Error");
+        res.status(500).json({ error: "Server error" });
     }
 });
 
