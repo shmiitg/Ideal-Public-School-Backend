@@ -5,6 +5,7 @@ const cors = require("cors");
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const studentRouter = require("./routes/student");
+const adminRouter = require("./routes/admin");
 
 require("./config/db");
 const app = express();
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/student", studentRouter);
+app.use("/admin", adminRouter);
 
 // const port = process.env.PORT || 5000;
 // app.listen(port, () => console.log(`Server running at port ${port}`));
