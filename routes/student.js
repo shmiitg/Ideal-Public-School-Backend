@@ -8,17 +8,17 @@ router.get("/registration", async (req, res) => {
         const { admNumber, dob } = req.query;
 
         if (!admNumber || !dob) {
-            return res.status(400).json({ msg: "Admission number and DOB are required" });
+            return res.status(400).json({ error: "Admission number and DOB are required" });
         }
 
         const studentDetails = await Student.findOne({ admNumber, dob }).lean();
         if (!studentDetails) {
-            return res.status(404).json({ msg: "Student not found" });
+            return res.status(404).json({ error: "Student not found" });
         }
 
         res.status(200).json({ studentDetails });
     } catch (err) {
-        res.status(500).json({ msg: "Server Error" });
+        res.status(500).json({ error: "Server Error" });
     }
 });
 
@@ -29,14 +29,14 @@ router.post("/registration", async (req, res) => {
 
         // Required Fields Validation
         if (!name || !dob) {
-            return res.status(400).json({ msg: "Name and DOB are required" });
+            return res.status(400).json({ error: "Name and DOB are required" });
         }
 
         // Check for Duplicate Aadhaar Number (unless it's "999999999999" or empty)
         if (aadhaarNumber && aadhaarNumber !== "999999999999" && aadhaarNumber.trim() !== "") {
             const existingStudent = await Student.findOne({ aadhaarNumber }).lean();
             if (existingStudent) {
-                return res.status(400).json({ msg: "Student with this Aadhaar already exists" });
+                return res.status(400).json({ error: "Student with this Aadhaar already exists" });
             }
         }
 
@@ -69,9 +69,9 @@ router.post("/registration", async (req, res) => {
         const newStudent = new Student(studentData);
         await newStudent.save();
 
-        res.status(201).json({ msg: "Student registered successfully", student: newStudent });
+        res.status(201).json({ student: newStudent });
     } catch (err) {
-        res.status(500).json({ msg: "Server Error" });
+        res.status(500).json({ error: "Server Error" });
     }
 });
 
@@ -81,7 +81,7 @@ router.put("/registration", async (req, res) => {
         const { admNumber, aadhaarNumber, siblings, ...updateData } = req.body;
 
         if (!admNumber) {
-            return res.status(400).json({ msg: "Admission number is required for updates" });
+            return res.status(400).json({ error: "Admission number is required for updates" });
         }
 
         // Check if Aadhaar is being updated & ensure uniqueness (unless it's "999999999999" or empty)
@@ -94,7 +94,7 @@ router.put("/registration", async (req, res) => {
             if (existingStudent) {
                 return res
                     .status(400)
-                    .json({ msg: "Aadhaar number already exists for another student" });
+                    .json({ error: "Aadhaar number already exists for another student" });
             }
         }
 
@@ -116,12 +116,12 @@ router.put("/registration", async (req, res) => {
         );
 
         if (!updatedStudent) {
-            return res.status(404).json({ msg: "Student not found" });
+            return res.status(404).json({ error: "Student not found" });
         }
 
-        res.status(200).json({ msg: "Student updated successfully", student: updatedStudent });
+        res.status(200).json({ student: updatedStudent });
     } catch (err) {
-        res.status(500).json({ msg: "Server Error" });
+        res.status(500).json({ error: "Server Error" });
     }
 });
 
