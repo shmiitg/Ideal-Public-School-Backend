@@ -20,11 +20,11 @@ router.get("/students", auth, async (req, res) => {
 
 router.get("/student/:admNumber", async (req, res) => {
     try {
-        const student = await Student.findOne({ admNumber: req.params.admNumber });
-        if (!student) {
+        const studentDetails = await Student.findOne({ admNumber: req.params.admNumber });
+        if (!studentDetails) {
             return res.status(404).json({ error: "Student not found" });
         }
-        res.status(200).json({ student });
+        res.status(200).json({ studentDetails });
     } catch (err) {
         res.status(500).json({ error: "Server error" });
     }
