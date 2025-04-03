@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const Student = require("../models/student");
+const Fees = require("../models/fees");
 const auth = require("../middleware/auth");
 
 // Get student details
@@ -20,11 +21,59 @@ router.get("/students", auth, async (req, res) => {
 
 router.get("/student/:admNumber", async (req, res) => {
     try {
-        const studentDetails = await Student.findOne({ admNumber: req.params.admNumber });
+        const { admNumber } = req.params;
+        const { session } = req.query; // Get session from query params
+
+        if (!session) {
+            return res.status(400).json({ error: "Academic session is required" });
+        }
+
+        const studentDetails = await Student.findOne({ admNumber });
         if (!studentDetails) {
             return res.status(404).json({ error: "Student not found" });
         }
-        res.status(200).json({ studentDetails });
+
+        const feesRecords = await Fees.find({
+            studentId: studentDetails._id,
+            session,
+        }).lean();
+
+        res.status(200).json({ studentDetails, feesRecords });
+    } catch (err) {
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+router.post("/fees/:admNumber", auth, async (req, res) => {
+    try {
+        const { admNumber } = req.params;
+        const { amountPaid, feesHead, session, paymentMethod, remarks } = req.body;
+
+        // Validate required fields
+        if (!amountPaid || !feesHead || !session || !paymentMethod) {
+            return res.status(400).json({ error: "All required fields must be provided" });
+        }
+
+        // Check if student exists
+        const student = await Student.findOne({ admNumber });
+        if (!student) {
+            return res.status(404).json({ error: "Student not found" });
+        }
+
+        // Create new fee record
+        const newFee = new Fees({
+            studentId: student._id,
+            amountPaid,
+            feesHead,
+            session,
+            paymentMethod,
+            remarks,
+        });
+
+        // Save to database
+        await newFee.save();
+
+        res.status(201).json({ fee: newFee });
     } catch (err) {
         res.status(500).json({ error: "Server error" });
     }

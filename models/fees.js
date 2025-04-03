@@ -23,7 +23,7 @@ const feesSchema = new mongoose.Schema(
         session: { type: String, required: true }, // Academic session (e.g., "2024-25")
         paymentMethod: {
             type: String,
-            enum: ["Cash", "Card", "UPI", "Bank Transfer"],
+            enum: ["Cash", "UPI", "Bank Transfer"],
             required: true,
         },
         remarks: { type: String, trim: true }, // Optional field for notes
