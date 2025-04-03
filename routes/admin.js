@@ -22,11 +22,6 @@ router.get("/students", auth, async (req, res) => {
 router.get("/student/:admNumber", async (req, res) => {
     try {
         const { admNumber } = req.params;
-        const { session } = req.query; // Get session from query params
-
-        if (!session) {
-            return res.status(400).json({ error: "Academic session is required" });
-        }
 
         const studentDetails = await Student.findOne({ admNumber });
         if (!studentDetails) {
@@ -35,7 +30,6 @@ router.get("/student/:admNumber", async (req, res) => {
 
         const feesRecords = await Fees.find({
             studentId: studentDetails._id,
-            session,
         }).lean();
 
         res.status(200).json({ studentDetails, feesRecords });
