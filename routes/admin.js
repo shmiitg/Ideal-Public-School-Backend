@@ -40,6 +40,50 @@ router.get("/student/:admNumber", async (req, res) => {
     }
 });
 
+router.put("/student/:admNumber", auth, async (req, res) => {
+    try {
+        const { admNumber } = req.params;
+        const { aadhaarNumber, siblings, ...updateData } = req.body;
+
+        // Check if Aadhaar is provided and ensure uniqueness
+        if (aadhaarNumber && aadhaarNumber.trim() !== "") {
+            const existingStudent = await Student.findOne({
+                aadhaarNumber,
+                admNumber: { $ne: admNumber }, // Ensure it's not the same student
+            });
+
+            if (existingStudent) {
+                return res.status(400).json({ error: "Aadhaar number must be unique" });
+            }
+        }
+
+        // Ensure `siblings` is formatted correctly
+        if (typeof siblings === "string") {
+            updateData.siblings = siblings.split(",").map((name) => ({
+                name: name.trim(),
+                regNumber: null, // Default to null, unless frontend sends objects
+            }));
+        } else if (Array.isArray(siblings)) {
+            updateData.siblings = siblings; // Keep existing regNumber values
+        }
+
+        // Perform Update
+        const updatedStudent = await Student.findOneAndUpdate(
+            { admNumber },
+            { $set: updateData },
+            { new: true, runValidators: true, upsert: false }
+        );
+
+        if (!updatedStudent) {
+            return res.status(404).json({ error: "Student not found" });
+        }
+
+        res.status(200).json({ student: updatedStudent });
+    } catch (err) {
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
 router.post("/fees/:admNumber", auth, async (req, res) => {
     try {
         const { admNumber } = req.params;

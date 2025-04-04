@@ -84,17 +84,15 @@ router.put("/registration", async (req, res) => {
             return res.status(400).json({ error: "Admission number is required for updates" });
         }
 
-        // Check if Aadhaar is being updated & ensure uniqueness (unless it's "999999999999" or empty)
-        if (aadhaarNumber && aadhaarNumber !== "999999999999" && aadhaarNumber.trim() !== "") {
+        // Check if Aadhaar is provided and ensure uniqueness
+        if (aadhaarNumber && aadhaarNumber.trim() !== "") {
             const existingStudent = await Student.findOne({
                 aadhaarNumber,
                 admNumber: { $ne: admNumber }, // Ensure it's not the same student
             });
 
             if (existingStudent) {
-                return res
-                    .status(400)
-                    .json({ error: "Aadhaar number already exists for another student" });
+                return res.status(400).json({ error: "Aadhaar number must be unique" });
             }
         }
 
