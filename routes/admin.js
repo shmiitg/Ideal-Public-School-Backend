@@ -113,7 +113,7 @@ router.post("/fees/:admNumber", auth, async (req, res) => {
         // Save to database
         await newFee.save();
 
-        res.status(201).json({ fee: newFee });
+        res.status(201).json({ fee: newFee, msg: "Fees added successfully!" });
     } catch (err) {
         res.status(500).json({ error: "Server error" });
     }
