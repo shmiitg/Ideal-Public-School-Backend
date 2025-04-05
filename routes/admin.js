@@ -25,14 +25,14 @@ router.get("/student/:admNumber", async (req, res) => {
     try {
         const { admNumber } = req.params;
 
+        // Fetch student details
         const studentDetails = await Student.findOne({ admNumber });
         if (!studentDetails) {
             return res.status(404).json({ error: "Student not found" });
         }
 
-        const feesRecords = await Fees.find({
-            studentId: studentDetails._id,
-        }).lean();
+        // Fetch fee records using admNumber
+        const feesRecords = await Fees.find({ admNumber }).lean();
 
         res.status(200).json({ studentDetails, feesRecords });
     } catch (err) {
@@ -95,14 +95,14 @@ router.post("/fees/:admNumber", auth, async (req, res) => {
         }
 
         // Check if student exists
-        const student = await Student.findOne({ admNumber });
-        if (!student) {
+        const studentExists = await Student.exists({ admNumber });
+        if (!studentExists) {
             return res.status(404).json({ error: "Student not found" });
         }
 
-        // Create new fee record
+        // Create new fee record with admNumber instead of studentId
         const newFee = new Fees({
-            studentId: student._id,
+            admNumber,
             amountPaid,
             feesHead,
             session,
