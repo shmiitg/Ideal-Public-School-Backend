@@ -8,7 +8,7 @@ const studentSchema = new mongoose.Schema(
         aadhaarNumber: { type: String, sparse: true, trim: true },
         nameAadhaar: { type: String, trim: true },
         regNumber: { type: Number, sparse: true },
-        admDate: { type: Date },
+        admDate: { type: Date, default: Date.now, required: true },
         admNumber: { type: String, required: true, trim: true },
         pen: { type: String, trim: true },
         studentClass: { type: String, required: true, trim: true },
