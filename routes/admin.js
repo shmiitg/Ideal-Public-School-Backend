@@ -88,7 +88,6 @@ router.post("/fees/:admNumber", auth, async (req, res) => {
     try {
         const { admNumber } = req.params;
         const { amountPaid, feesHead, session, paymentMethod, remarks } = req.body;
-
         // Validate required fields
         if (!amountPaid || !feesHead || !session || !paymentMethod) {
             return res.status(400).json({ errorMsg: "All required fields must be provided" });

@@ -18,7 +18,7 @@ const feesSchema = new mongoose.Schema(
         receiptNumber: {
             type: String,
             unique: true,
-            required: true,
+            immutable: true,
         },
         amountPaid: {
             type: Number,
