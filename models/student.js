@@ -8,6 +8,7 @@ const studentSchema = new mongoose.Schema(
         aadhaarNumber: { type: String, sparse: true, trim: true },
         nameAadhaar: { type: String, trim: true },
         regNumber: { type: Number, sparse: true },
+        admDate: { type: Date },
         admNumber: { type: String, required: true, trim: true },
         pen: { type: String, trim: true },
         studentClass: { type: String, required: true, trim: true },
@@ -19,7 +20,6 @@ const studentSchema = new mongoose.Schema(
             name: { type: String, trim: true, required: true },
             qualification: { type: String, trim: true },
         },
-        // 👇 Updated from enum to plain number
         annualIncome: { type: Number, required: true },
 
         address: { type: String, required: true, trim: true },
