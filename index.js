@@ -6,6 +6,7 @@ const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const studentRouter = require("./routes/student");
 const adminRouter = require("./routes/admin");
+const feesRouter = require("./routes/fees");
 
 require("./config/db");
 const app = express();
@@ -23,8 +24,9 @@ app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/student", studentRouter);
 app.use("/admin", adminRouter);
+app.use("/fees", feesRouter);
 
-// const port = process.env.PORT || 5000;
-// app.listen(port, () => console.log(`Server running at port ${port}`));
+const port = process.env.PORT || 5000;
+app.listen(port, () => console.log(`Server running at port ${port}`));
 
-module.exports = app;
+// module.exports = app;

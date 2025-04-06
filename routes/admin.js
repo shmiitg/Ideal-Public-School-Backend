@@ -91,7 +91,7 @@ router.post("/fees/:admNumber", auth, async (req, res) => {
 
         // Validate required fields
         if (!amountPaid || !feesHead || !session || !paymentMethod) {
-            return res.status(400).json({ error: "All required fields must be provided" });
+            return res.status(400).json({ errorMsg: "All required fields must be provided" });
         }
 
         // Check if student exists
@@ -113,7 +113,7 @@ router.post("/fees/:admNumber", auth, async (req, res) => {
         // Save to database
         await newFee.save();
 
-        res.status(201).json({ fee: newFee, msg: "Fees added successfully!" });
+        res.status(201).json({ fee: newFee, successMsg: "Fees added successfully!" });
     } catch (err) {
         res.status(500).json({ error: "Server error" });
     }
