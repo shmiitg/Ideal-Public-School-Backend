@@ -9,7 +9,7 @@ router.get("/:receiptNumber", async (req, res) => {
         const fee = await Fees.findOne({ receiptNumber });
 
         if (!fee) {
-            return res.status(404).json({ errorMsg: "Fee record not found" });
+            return res.status(404).json({ error: "Fee record not found" });
         }
 
         res.status(200).json({ fee });
