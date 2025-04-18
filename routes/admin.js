@@ -13,7 +13,7 @@ router.get("/students", auth, async (req, res) => {
             res.status(400).json({ error: "Only admin access allowed" });
         }
         const students = await Student.find()
-            .select("name admNumber studentClass dob rte studying")
+            .select("name admNumber admDate studentClass dob rte studying")
             .lean();
         res.status(200).json({ students });
     } catch (err) {
